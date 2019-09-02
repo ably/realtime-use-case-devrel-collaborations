@@ -11,18 +11,26 @@ export class ChartUiPanelComponent implements OnInit {
 
   ably: any
   jpyPriceChannel: any
+  usdPriceChannel: any
   constructor() { }
 
   ngOnInit() {
     this.ably = new Ably.Realtime('<ABLY-API-KEY>');
-    console.log('here');
     this.jpyPriceChannel = this.ably.channels.get('[product:ably-bitflyer/bitcoin]bitcoin:jpy');
     this.jpyPriceChannel.subscribe((msg) => {
-      this.series[0].data.push(Number(msg.data.price) / 1000000); //real data to display, doesn't work atm
-      console.log(msg.data.price / 1000000);
+      // make a copy of the data array
+      const dataCopy = this.series[0].data.slice(0);
+
+      // push the new info into the copy
+      dataCopy.push(Number(msg.data.price) / 1000000);
+
+      // *optional: limit amount of data points shown
+      if(dataCopy.length > 10) { dataCopy.shift(); }
+
+      // set the OG data equal to the copy
+      this.series[0].data = dataCopy;
     })
-    this.series[0].data.push(Number(2.2)) //dummy data to test
-    this.series[0].data.push(Number(1.7)) //dummy data to test
+
     this.series[1].data.push(Number(4.2)) //dummy data to test
     this.series[1].data.push(Number(0.8)) //dummy data to test
   }
