@@ -6,6 +6,14 @@
     <kendo-chart-title text="Bitcoin live pricing chart"></kendo-chart-title>
     <kendo-chart-legend position="bottom" orientation="horizontal"></kendo-chart-legend>
     <kendo-chart-tooltip format="{0}"></kendo-chart-tooltip>
+    <kendo-chart-value-axis>
+        <kendo-chart-value-axis-item [title]="{ text: 'Price in USD' }" [min]="10000" [max]="11000">
+        </kendo-chart-value-axis-item>
+    </kendo-chart-value-axis>
+    <kendo-chart-category-axis>
+        <kendo-chart-category-axis-item [title]="{ text: 'Time stamps' }" [categories]="timestamps[0].timedata">
+        </kendo-chart-category-axis-item>
+    </kendo-chart-category-axis>
     <kendo-chart-series>
         <kendo-chart-series-item *ngFor="let item of series" type="line" style="smooth" [data]="item.data"
             [name]="item.name">

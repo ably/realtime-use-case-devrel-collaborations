@@ -12,38 +12,44 @@ export class ChartUiPanelComponent implements OnInit {
   ably: any
   jpyPriceChannel: any
   usdPriceChannel: any
+  dataInDecimalcopy: any = 0;
   constructor() { }
-
   ngOnInit() {
     this.ably = new Ably.Realtime('<ABLY-API-KEY>');
-    this.jpyPriceChannel = this.ably.channels.get('[product:ably-bitflyer/bitcoin]bitcoin:jpy');
-    this.jpyPriceChannel.subscribe((msg) => {
-      // make a copy of the data array
-      const dataCopy = this.series[0].data.slice(0);
 
-      // push the new info into the copy
-      dataCopy.push(Number(msg.data.price) / 1000000);
+    // make sure you have access to this product by self-subscribing to it via the Ably Hub
+    this.usdPriceChannel = this.ably.channels.get('[product:ably-coindesk/bitcoin]bitcoin:usd');
 
-      // *optional: limit amount of data points shown
-      if(dataCopy.length > 10) { dataCopy.shift(); }
+    this.usdPriceChannel.subscribe((msg) => {
+      var timestamp = new Date(msg.timestamp)
+      const dataInDecimal = msg.data.replace(/\,/g, '');
 
-      // set the OG data equal to the copy
-      this.series[0].data = dataCopy;
+      // plot the data only when it has changed
+      if (dataInDecimal != this.dataInDecimalcopy) {
+        const dataCopy = this.series[0].data.slice(0);
+        const timeCopy = this.timestamps[0].timedata.slice(0);
+        dataCopy.push(parseFloat(dataInDecimal))
+        timeCopy.push(timestamp.getHours() + ":" + timestamp.getMinutes() + ":" + timestamp.getSeconds())
+        this.dataInDecimalcopy = dataInDecimal;
+
+        // *optional: limit amount of data points shown
+        if (dataCopy.length > 20) { dataCopy.shift(); }
+        if (timeCopy.length > 20) { timeCopy.shift(); }
+        // set the OG data equal to the copy
+        this.series[0].data = dataCopy;
+        this.timestamps[0].timedata = timeCopy;
+      }
     })
-
-    this.series[1].data.push(Number(4.2)) //dummy data to test
-    this.series[1].data.push(Number(0.8)) //dummy data to test
   }
-
   title = 'live-bitcoin-chart';
 
   public events: string[] = [];
-  public series: any[] = [{
-    name: 'JPY',
-    data: []
-  }, {
+  public timestamps: any[] = [{
     name: 'USD',
-    // data: [4.743, 7.295, 7.175, 6.376, 8.153, 8.535, 5.247, -7.832, 4.3, 4.3]
+    timedata: []
+  }];
+  public series: any[] = [{
+    name: 'USD',
     data: []
   }];
 
