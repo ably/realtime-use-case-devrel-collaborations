@@ -10,7 +10,6 @@ declare var Ably: any;
 export class ChartUiPanelComponent implements OnInit {
 
   ably: any
-  jpyPriceChannel: any
   usdPriceChannel: any
   dataInDecimalcopy: any = 0;
   constructor() { }
