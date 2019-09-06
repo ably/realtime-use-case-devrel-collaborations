@@ -42,7 +42,6 @@ export class ChartUiPanelComponent implements OnInit {
   }
   title = 'live-bitcoin-chart';
 
-  public events: string[] = [];
   public timestamps: any[] = [{
     name: 'USD',
     timedata: []
@@ -51,44 +50,4 @@ export class ChartUiPanelComponent implements OnInit {
     name: 'USD',
     data: []
   }];
-
-  public categories: number[] = [];
-
-  public onRender(): void {
-    this.log('render');
-  }
-
-  public onAxisLabelClick(e): void {
-    this.log('axisLabelClick', e);
-  }
-
-  public onLegendItemClick(e): void {
-    this.log('legendItemClick', e);
-  }
-
-  public onLegendItemHover(e): void {
-    this.log('legendItemHover', e);
-  }
-
-  public onPlotAreaClick(e): void {
-    this.log('plotAreaClick', e);
-  }
-
-  public onPlotAreaHover(e): void {
-    this.log('plotAreaHover', e);
-  }
-
-  public onSeriesClick(e): void {
-    this.log('seriesClick', e);
-  }
-
-  public onSeriesHover(e): void {
-    this.log('seriesHover', e);
-  }
-
-  private log(event: string, arg: any = null): void {
-    this.events.push(`${event}`);
-    console.log(arg);
-  }
-
 }
